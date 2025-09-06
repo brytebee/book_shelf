@@ -2,6 +2,10 @@
 
 A modern, responsive web application for managing a shared book collection with user authentication and role-based access control.
 
+## Image
+
+![alt text](image.png)
+
 ## Features
 
 ### Public Features

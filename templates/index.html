@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BookShelf Management System</title>
+    <style>
+      /* Your existing CSS remains the same */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        color: #333;
+      }
+
+      .container {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      .sidebar {
+        width: 280px;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-right: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 2rem 0;
+        box-shadow: 2px 0 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .sidebar h1 {
+        padding: 0 2rem 2rem;
+        color: #667eea;
+        font-size: 1.5rem;
+        font-weight: 700;
+      }
+
+      .user-info {
+        padding: 1rem 2rem;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        margin-bottom: 1rem;
+      }
+
+      .user-info h3 {
+        color: #333;
+        font-size: 1rem;
+      }
+
+      .user-info p {
+        color: #666;
+        font-size: 0.875rem;
+      }
+
+      .nav-section {
+        margin-bottom: 2rem;
+      }
+
+      .nav-section h4 {
+        padding: 0 2rem 0.5rem;
+        color: #666;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 600;
+      }
+
+      .nav-item {
+        display: block;
+        padding: 0.75rem 2rem;
+        color: #555;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border-left: 3px solid transparent;
+      }
+
+      .nav-item:hover,
+      .nav-item.active {
+        background: rgba(102, 126, 234, 0.1);
+        color: #667eea;
+        border-left-color: #667eea;
+      }
+
+      .main-content {
+        flex: 1;
+        padding: 2rem;
+        overflow-y: auto;
+      }
+
+      .content-header {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      }
+
+      .content-header h2 {
+        color: #333;
+        margin-bottom: 0.5rem;
+      }
+
+      .content-header p {
+        color: #666;
+      }
+
+      .login-form,
+      .content-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        max-width: 500px;
+        margin: 0 auto;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #333;
+        font-weight: 500;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 0.875rem 1rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+      }
+
+      .form-group input:focus {
+        outline: none;
+        border-color: #667eea;
+      }
+
+      .btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 0.875rem 2rem;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+      }
+
+      .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .book-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+      }
+
+      .book-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+      }
+
+      .book-card:hover {
+        transform: translateY(-5px);
+      }
+
+      .book-card h3 {
+        color: #333;
+        margin-bottom: 0.5rem;
+      }
+
+      .book-card p {
+        color: #666;
+        margin-bottom: 0.25rem;
+        font-size: 0.875rem;
+      }
+
+      .status-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-top: 0.5rem;
+      }
+
+      .status-available {
+        background: #10b981;
+        color: white;
+      }
+
+      .status-unavailable {
+        background: #ef4444;
+        color: white;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .error {
+        color: #ef4444;
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+      }
+
+      .filters {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .filters input,
+      .filters select {
+        padding: 0.5rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 6px;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          flex-direction: column;
+        }
+
+        .sidebar {
+          width: 100%;
+          padding: 1rem 0;
+        }
+
+        .main-content {
+          padding: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Sidebar Navigation -->
+      <nav class="sidebar" id="sidebar">
+        <h1>📚 BookShelf</h1>
+
+        <!-- User Info -->
+        <div class="user-info hidden" id="userInfo">
+          <h3 id="userName">Loading...</h3>
+          <p id="userEmail">Loading...</p>
+        </div>
+
+        <!-- Public Navigation -->
+        <div class="nav-section">
+          <h4>Public</h4>
+          <a href="#" class="nav-item active" data-view="books">All Books</a>
+          <a href="#" class="nav-item" data-view="login">Login</a>
+          <a href="#" class="nav-item" data-view="register">Register</a>
+        </div>
+
+        <!-- Authenticated Navigation -->
+        <div class="nav-section hidden" id="authNav">
+          <h4>My Library</h4>
+          <a href="#" class="nav-item" data-view="my-books">My Books</a>
+          <a href="#" class="nav-item" data-view="add-book">Add Book</a>
+          <a href="#" class="nav-item" data-view="profile">Profile</a>
+        </div>
+
+        <!-- Admin Navigation -->
+        <div class="nav-section hidden" id="adminNav">
+          <h4>Administration</h4>
+          <a href="#" class="nav-item" data-view="admin-users">Manage Users</a>
+          <a href="#" class="nav-item" data-view="admin-books"
+            >All Books (Admin)</a
+          >
+        </div>
+
+        <!-- Logout -->
+        <div class="nav-section hidden" id="logoutSection">
+          <a href="#" class="nav-item" id="logoutBtn">Logout</a>
+        </div>
+      </nav>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <!-- Books View -->
+        <div id="booksView" class="view">
+          <div class="content-header">
+            <h2>All Books</h2>
+            <p>Browse our complete book collection</p>
+          </div>
+
+          <div class="filters">
+            <input type="text" id="searchBooks" placeholder="Search books..." />
+            <select id="genreFilter">
+              <option value="">All Genres</option>
+              <option value="fiction">Fiction</option>
+              <option value="non-fiction">Non-Fiction</option>
+              <option value="mystery">Mystery</option>
+              <option value="sci-fi">Sci-Fi</option>
+              <option value="romance">Romance</option>
+            </select>
+            <select id="availabilityFilter">
+              <option value="">All Books</option>
+              <option value="true">Available</option>
+              <option value="false">Unavailable</option>
+            </select>
+          </div>
+
+          <div id="booksGrid" class="book-grid"></div>
+        </div>
+
+        <!-- Login View -->
+        <div id="loginView" class="view hidden">
+          <div class="content-header">
+            <h2>Login</h2>
+            <p>Access your personal library</p>
+          </div>
+
+          <form class="login-form" id="loginForm">
+            <div class="form-group">
+              <label for="loginEmail">Email</label>
+              <input type="email" id="loginEmail" required />
+            </div>
+            <div class="form-group">
+              <label for="loginPassword">Password</label>
+              <input type="password" id="loginPassword" required />
+            </div>
+            <button type="submit" class="btn">Login</button>
+            <div id="loginError" class="error"></div>
+          </form>
+        </div>
+
+        <!-- Register View -->
+        <div id="registerView" class="view hidden">
+          <div class="content-header">
+            <h2>Register</h2>
+            <p>Create your BookShelf account</p>
+          </div>
+
+          <form class="login-form" id="registerForm">
+            <div class="form-group">
+              <label for="registerEmail">Email</label>
+              <input type="email" id="registerEmail" required />
+            </div>
+            <div class="form-group">
+              <label for="registerFirstName">First Name</label>
+              <input type="text" id="registerFirstName" required />
+            </div>
+            <div class="form-group">
+              <label for="registerLastName">Last Name</label>
+              <input type="text" id="registerLastName" required />
+            </div>
+            <div class="form-group">
+              <label for="registerPassword">Password</label>
+              <input
+                type="password"
+                id="registerPassword"
+                required
+                minlength="8"
+              />
+            </div>
+            <div class="form-group">
+              <label for="registerPasswordConfirm">Confirm Password</label>
+              <input
+                type="password"
+                id="registerPasswordConfirm"
+                required
+                minlength="8"
+              />
+            </div>
+            <button type="submit" class="btn">Register</button>
+            <div id="registerError" class="error"></div>
+          </form>
+        </div>
+
+        <!-- My Books View -->
+        <div id="myBooksView" class="view hidden">
+          <div class="content-header">
+            <h2>My Books</h2>
+            <p>Books you've added to the collection</p>
+          </div>
+          <div id="myBooksGrid" class="book-grid"></div>
+        </div>
+
+        <!-- Add Book View -->
+        <div id="addBookView" class="view hidden">
+          <div class="content-header">
+            <h2>Add Book</h2>
+            <p>Share a new book with the community</p>
+          </div>
+
+          <form class="login-form" id="addBookForm">
+            <div class="form-group">
+              <label for="bookTitle">Title</label>
+              <input type="text" id="bookTitle" required />
+            </div>
+            <div class="form-group">
+              <label for="bookAuthor">Author</label>
+              <input type="text" id="bookAuthor" required />
+            </div>
+            <div class="form-group">
+              <label for="bookIsbn">ISBN</label>
+              <input type="text" id="bookIsbn" />
+            </div>
+            <div class="form-group">
+              <label for="bookGenre">Genre</label>
+              <select id="bookGenre" required>
+                <option value="">Select Genre</option>
+                <option value="fiction">Fiction</option>
+                <option value="non-fiction">Non-Fiction</option>
+                <option value="mystery">Mystery</option>
+                <option value="sci-fi">Sci-Fi</option>
+                <option value="romance">Romance</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="bookPublicationDate">Publication Date</label>
+              <input type="date" id="bookPublicationDate" />
+            </div>
+            <div class="form-group">
+              <label for="bookDescription">Description</label>
+              <textarea
+                id="bookDescription"
+                rows="4"
+                style="
+                  width: 100%;
+                  padding: 0.875rem 1rem;
+                  border: 2px solid #e2e8f0;
+                  border-radius: 8px;
+                "
+              ></textarea>
+            </div>
+            <div class="form-group">
+              <label for="bookPageCount">Page Count</label>
+              <input type="number" id="bookPageCount" min="1" />
+            </div>
+            <button type="submit" class="btn">Add Book</button>
+            <div id="addBookError" class="error"></div>
+          </form>
+        </div>
+
+        <!-- Profile View -->
+        <div id="profileView" class="view hidden">
+          <div class="content-header">
+            <h2>Profile</h2>
+            <p>Manage your account information</p>
+          </div>
+
+          <form class="login-form" id="profileForm">
+            <div class="form-group">
+              <label for="profileEmail">Email</label>
+              <input type="email" id="profileEmail" disabled />
+            </div>
+            <div class="form-group">
+              <label for="profileFirstName">First Name</label>
+              <input type="text" id="profileFirstName" required />
+            </div>
+            <div class="form-group">
+              <label for="profileLastName">Last Name</label>
+              <input type="text" id="profileLastName" required />
+            </div>
+            <button type="submit" class="btn">Update Profile</button>
+            <div id="profileError" class="error"></div>
+          </form>
+        </div>
+
+        <!-- Admin Users View -->
+        <div id="adminUsersView" class="view hidden">
+          <div class="content-header">
+            <h2>Manage Users</h2>
+            <p>Admin panel for user management</p>
+          </div>
+          <div id="usersGrid" class="book-grid"></div>
+        </div>
+
+        <!-- Admin Books View -->
+        <div id="adminBooksView" class="view hidden">
+          <div class="content-header">
+            <h2>All Books (Admin)</h2>
+            <p>Admin panel for book management</p>
+          </div>
+          <div id="adminBooksGrid" class="book-grid"></div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      class BookShelfApp {
+        constructor() {
+          this.apiBase = "/api/v1";
+          this.currentUser = null;
+          this.accessToken = localStorage.getItem("access_token");
+          this.refreshToken = localStorage.getItem("refresh_token");
+
+          this.init();
+        }
+
+        init() {
+          this.setupEventListeners();
+          this.checkAuthStatus();
+          this.loadBooks();
+        }
+
+        setupEventListeners() {
+          // Navigation
+          document.querySelectorAll("[data-view]").forEach((link) => {
+            link.addEventListener("click", (e) => {
+              e.preventDefault();
+              this.showView(e.target.dataset.view);
+            });
+          });
+
+          // Forms
+          document
+            .getElementById("loginForm")
+            .addEventListener("submit", (e) => this.handleLogin(e));
+          document
+            .getElementById("registerForm")
+            .addEventListener("submit", (e) => this.handleRegister(e));
+          document
+            .getElementById("addBookForm")
+            .addEventListener("submit", (e) => this.handleAddBook(e));
+          document
+            .getElementById("profileForm")
+            .addEventListener("submit", (e) => this.handleUpdateProfile(e));
+
+          // Logout
+          document
+            .getElementById("logoutBtn")
+            .addEventListener("click", (e) => {
+              e.preventDefault();
+              this.logout();
+            });
+
+          // Filters
+          document
+            .getElementById("searchBooks")
+            .addEventListener("input", () => this.loadBooks());
+          document
+            .getElementById("genreFilter")
+            .addEventListener("change", () => this.loadBooks());
+          document
+            .getElementById("availabilityFilter")
+            .addEventListener("change", () => this.loadBooks());
+        }
+
+        async apiCall(endpoint, options = {}) {
+          const url = `${this.apiBase}${endpoint}`;
+          const headers = {
+            "Content-Type": "application/json",
+            ...options.headers,
+          };
+
+          if (this.accessToken) {
+            headers["Authorization"] = `Bearer ${this.accessToken}`;
+          }
+
+          try {
+            const response = await fetch(url, {
+              ...options,
+              headers,
+            });
+
+            if (response.status === 401 && this.refreshToken) {
+              // Try to refresh token
+              const refreshed = await this.refreshAccessToken();
+              if (refreshed) {
+                // Retry original request
+                headers["Authorization"] = `Bearer ${this.accessToken}`;
+                return fetch(url, { ...options, headers });
+              }
+            }
+
+            return response;
+          } catch (error) {
+            console.error("API call failed:", error);
+            throw error;
+          }
+        }
+
+        async refreshAccessToken() {
+          try {
+            const response = await fetch(
+              `${this.apiBase}/auth/token/refresh/`,
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ refresh: this.refreshToken }),
+              }
+            );
+
+            if (response.ok) {
+              const data = await response.json();
+              this.accessToken = data.access;
+              localStorage.setItem("access_token", data.access);
+              return true;
+            }
+          } catch (error) {
+            console.error("Token refresh failed:", error);
+          }
+
+          this.logout();
+          return false;
+        }
+
+        async checkAuthStatus() {
+          if (this.accessToken) {
+            try {
+              const response = await this.apiCall("/auth/profile/");
+              if (response.ok) {
+                this.currentUser = await response.json();
+                this.updateUI();
+                return;
+              }
+            } catch (error) {
+              console.error("Auth check failed:", error);
+            }
+          }
+          this.updateUI();
+        }
+
+        updateUI() {
+          const isLoggedIn = !!this.currentUser;
+          const isAdmin = this.currentUser?.role === "admin";
+
+          // Update user info
+          if (isLoggedIn) {
+            document.getElementById("userInfo").classList.remove("hidden");
+            document.getElementById("userName").textContent =
+              this.currentUser.full_name;
+            document.getElementById("userEmail").textContent =
+              this.currentUser.email;
+
+            document.getElementById("authNav").classList.remove("hidden");
+            document.getElementById("logoutSection").classList.remove("hidden");
+
+            if (isAdmin) {
+              document.getElementById("adminNav").classList.remove("hidden");
+            }
+          } else {
+            document.getElementById("userInfo").classList.add("hidden");
+            document.getElementById("authNav").classList.add("hidden");
+            document.getElementById("adminNav").classList.add("hidden");
+            document.getElementById("logoutSection").classList.add("hidden");
+          }
+        }
+
+        showView(viewName) {
+          // Hide all views
+          document
+            .querySelectorAll(".view")
+            .forEach((view) => view.classList.add("hidden"));
+
+          // Show selected view - fixed ID matching
+          let targetViewId;
+          switch (viewName) {
+            case "books":
+              targetViewId = "booksView";
+              break;
+            case "login":
+              targetViewId = "loginView";
+              break;
+            case "register":
+              targetViewId = "registerView";
+              break;
+            case "my-books":
+              targetViewId = "myBooksView";
+              break;
+            case "add-book":
+              targetViewId = "addBookView";
+              break;
+            case "profile":
+              targetViewId = "profileView";
+              break;
+            case "admin-users":
+              targetViewId = "adminUsersView";
+              break;
+            case "admin-books":
+              targetViewId = "adminBooksView";
+              break;
+            default:
+              targetViewId = `${viewName}View`;
+          }
+
+          const targetView = document.getElementById(targetViewId);
+          if (targetView) {
+            targetView.classList.remove("hidden");
+          } else {
+            console.error(`View not found: ${targetViewId}`);
+          }
+
+          // Update active nav
+          document
+            .querySelectorAll(".nav-item")
+            .forEach((item) => item.classList.remove("active"));
+          document
+            .querySelector(`[data-view="${viewName}"]`)
+            .classList.add("active");
+
+          // Load view-specific data
+          switch (viewName) {
+            case "books":
+              this.loadBooks();
+              break;
+            case "my-books":
+              this.loadMyBooks();
+              break;
+            case "profile":
+              this.loadProfile();
+              break;
+            case "admin-users":
+              this.loadAdminUsers();
+              break;
+            case "admin-books":
+              this.loadAdminBooks();
+              break;
+          }
+        }
+
+        async handleLogin(e) {
+          e.preventDefault();
+          const email = document.getElementById("loginEmail").value;
+          const password = document.getElementById("loginPassword").value;
+          const errorDiv = document.getElementById("loginError");
+
+          try {
+            const response = await this.apiCall("/auth/login/", {
+              method: "POST",
+              body: JSON.stringify({ email, password }),
+            });
+
+            if (response.ok) {
+              const data = await response.json();
+              this.accessToken = data.access;
+              this.refreshToken = data.refresh;
+              this.currentUser = data.user;
+
+              localStorage.setItem("access_token", data.access);
+              localStorage.setItem("refresh_token", data.refresh);
+
+              this.updateUI();
+              this.showView("books");
+              errorDiv.textContent = "";
+              e.target.reset();
+            } else {
+              const error = await response.json();
+              errorDiv.textContent = error.detail || "Login failed";
+            }
+          } catch (error) {
+            errorDiv.textContent = "Network error. Please try again.";
+          }
+        }
+
+        async handleRegister(e) {
+          e.preventDefault();
+          const formData = {
+            email: document.getElementById("registerEmail").value,
+            first_name: document.getElementById("registerFirstName").value,
+            last_name: document.getElementById("registerLastName").value,
+            password: document.getElementById("registerPassword").value,
+            password_confirm: document.getElementById("registerPasswordConfirm")
+              .value,
+          };
+          const errorDiv = document.getElementById("registerError");
+
+          if (formData.password !== formData.password_confirm) {
+            errorDiv.textContent = "Passwords don't match";
+            return;
+          }
+
+          try {
+            const response = await this.apiCall("/auth/register/", {
+              method: "POST",
+              body: JSON.stringify(formData),
+            });
+
+            if (response.ok) {
+              const data = await response.json();
+              this.accessToken = data.access;
+              this.refreshToken = data.refresh;
+              this.currentUser = data.user;
+
+              localStorage.setItem("access_token", data.access);
+              localStorage.setItem("refresh_token", data.refresh);
+
+              this.updateUI();
+              this.showView("books");
+              errorDiv.textContent = "";
+              e.target.reset();
+            } else {
+              const error = await response.json();
+              errorDiv.textContent =
+                Object.values(error)[0] || "Registration failed";
+            }
+          } catch (error) {
+            errorDiv.textContent = "Network error. Please try again.";
+          }
+        }
+
+        async handleAddBook(e) {
+          e.preventDefault();
+          const formData = {
+            title: document.getElementById("bookTitle").value,
+            author: document.getElementById("bookAuthor").value,
+            isbn: document.getElementById("bookIsbn").value || null,
+            genre: document.getElementById("bookGenre").value,
+            publication_date:
+              document.getElementById("bookPublicationDate").value || null,
+            description: document.getElementById("bookDescription").value || "",
+            page_count: document.getElementById("bookPageCount").value
+              ? parseInt(document.getElementById("bookPageCount").value)
+              : null,
+          };
+          const errorDiv = document.getElementById("addBookError");
+
+          // Validate required fields
+          if (!formData.title || !formData.author || !formData.genre) {
+            errorDiv.textContent =
+              "Title, Author, and Genre are required fields";
+            return;
+          }
+
+          try {
+            const response = await this.apiCall("/books/add/", {
+              method: "POST",
+              body: JSON.stringify(formData),
+            });
+
+            if (response.ok) {
+              const data = await response.json();
+              this.showView("my-books");
+              errorDiv.textContent = "";
+              e.target.reset();
+              alert("Book added successfully!");
+            } else {
+              const error = await response.json();
+              errorDiv.textContent =
+                Object.values(error.errors || error)[0] || "Failed to add book";
+            }
+          } catch (error) {
+            errorDiv.textContent = "Network error. Please try again.";
+          }
+        }
+
+        async handleUpdateProfile(e) {
+          e.preventDefault();
+          const formData = {
+            first_name: document.getElementById("profileFirstName").value,
+            last_name: document.getElementById("profileLastName").value,
+          };
+          const errorDiv = document.getElementById("profileError");
+
+          try {
+            const response = await this.apiCall("/auth/profile/", {
+              method: "PATCH",
+              body: JSON.stringify(formData),
+            });
+
+            if (response.ok) {
+              this.currentUser = await response.json();
+              this.updateUI();
+              errorDiv.textContent = "";
+              alert("Profile updated successfully!");
+            } else {
+              const error = await response.json();
+              errorDiv.textContent =
+                Object.values(error)[0] || "Failed to update profile";
+            }
+          } catch (error) {
+            errorDiv.textContent = "Network error. Please try again.";
+          }
+        }
+
+        logout() {
+          this.accessToken = null;
+          this.refreshToken = null;
+          this.currentUser = null;
+          localStorage.removeItem("access_token");
+          localStorage.removeItem("refresh_token");
+          this.updateUI();
+          this.showView("books");
+        }
+
+        async loadBooks() {
+          const search = document.getElementById("searchBooks").value;
+          const genre = document.getElementById("genreFilter").value;
+          const availability =
+            document.getElementById("availabilityFilter").value;
+
+          let url = "/books/?";
+          const params = new URLSearchParams();
+          if (search) params.append("search", search);
+          if (genre) params.append("genre", genre);
+          if (availability) params.append("is_available", availability);
+
+          try {
+            const response = await this.apiCall(`/books/?${params}`);
+            if (response.ok) {
+              const data = await response.json();
+              this.renderBooks(data.results || data, "booksGrid");
+            }
+          } catch (error) {
+            console.error("Failed to load books:", error);
+          }
+        }
+
+        async loadMyBooks() {
+          try {
+            const response = await this.apiCall("/books/my-books/");
+            if (response.ok) {
+              const data = await response.json();
+              this.renderBooks(data.results || data, "myBooksGrid");
+            }
+          } catch (error) {
+            console.error("Failed to load my books:", error);
+          }
+        }
+
+        async loadAdminUsers() {
+          try {
+            const response = await this.apiCall("/auth/admin/users/");
+            if (response.ok) {
+              const data = await response.json();
+              this.renderUsers(data.results || data, "usersGrid");
+            }
+          } catch (error) {
+            console.error("Failed to load admin users:", error);
+          }
+        }
+
+        async loadAdminBooks() {
+          try {
+            const response = await this.apiCall("/books/admin/all-books/");
+            if (response.ok) {
+              const data = await response.json();
+              this.renderBooks(data.results || data, "adminBooksGrid");
+            }
+          } catch (error) {
+            console.error("Failed to load admin books:", error);
+          }
+        }
+
+        async loadProfile() {
+          if (this.currentUser) {
+            document.getElementById("profileEmail").value =
+              this.currentUser.email;
+            document.getElementById("profileFirstName").value =
+              this.currentUser.first_name;
+            document.getElementById("profileLastName").value =
+              this.currentUser.last_name;
+          }
+        }
+
+        renderBooks(books, containerId) {
+          const container = document.getElementById(containerId);
+          if (!books || !books.length) {
+            container.innerHTML =
+              '<p style="text-align: center; color: #666;">No books found.</p>';
+            return;
+          }
+
+          container.innerHTML = books
+            .map(
+              (book) => `
+                    <div class="book-card">
+                        <h3>${book.title}</h3>
+                        <p><strong>Author:</strong> ${book.author}</p>
+                        <p><strong>Genre:</strong> ${book.genre}</p>
+                        <p><strong>Added by:</strong> ${
+                          book.added_by_name || "Unknown"
+                        }</p>
+                        <p><strong>Date Added:</strong> ${new Date(
+                          book.date_added
+                        ).toLocaleDateString()}</p>
+                        <span class="status-badge ${
+                          book.is_available
+                            ? "status-available"
+                            : "status-unavailable"
+                        }">
+                            ${book.is_available ? "Available" : "Unavailable"}
+                        </span>
+                    </div>
+                `
+            )
+            .join("");
+        }
+
+        renderUsers(users, containerId) {
+          const container = document.getElementById(containerId);
+          if (!users || !users.length) {
+            container.innerHTML =
+              '<p style="text-align: center; color: #666;">No users found.</p>';
+            return;
+          }
+
+          container.innerHTML = users
+            .map(
+              (user) => `
+                    <div class="book-card">
+                        <h3>${user.full_name}</h3>
+                        <p><strong>Email:</strong> ${user.email}</p>
+                        <p><strong>Role:</strong> ${user.role}</p>
+                        <p><strong>Date Joined:</strong> ${new Date(
+                          user.date_joined
+                        ).toLocaleDateString()}</p>
+                        <span class="status-badge ${
+                          user.is_active
+                            ? "status-available"
+                            : "status-unavailable"
+                        }">
+                            ${user.is_active ? "Active" : "Inactive"}
+                        </span>
+                    </div>
+                `
+            )
+            .join("");
+        }
+      }
+
+      // Initialize the app when DOM is loaded
+      document.addEventListener("DOMContentLoaded", () => {
+        new BookShelfApp();
+      });
+    </script>
+  </body>
+</html>

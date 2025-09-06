@@ -1,0 +1,24 @@
+### Register
+POST http://localhost:8000/api/v1/auth/register/
+Content-Type: application/json
+
+{
+  "email":"user001@gy.un", 
+  "first_name":"User", 
+  "last_name":"One", 
+  "password":"secrepass00!", 
+  "password_confirm": "secrepass00!"
+}
+
+### login
+POST http://localhost:8000/api/v1/auth/login/
+Content-Type: application/json
+
+{
+  "email":"admin@book-shelf.com",
+  "password":"Hv+VEGS%494", 
+  "password_confirm": "Hv+VEGS%494"
+}
+
+#   "email": "admin@book-shelf.com",
+#   "password": "Hv+VEGS%494"

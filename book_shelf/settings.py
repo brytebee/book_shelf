@@ -112,6 +112,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",  # Vue/other frontend
     # Add your production domains here
     "https://brytebee.pythonanywhere.com",
+    'brytebee.pythonanywhere.com',
 ]
 
 CORS_ALLOW_CREDENTIALS = True

@@ -10,7 +10,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'brytebee.pythonanywhere.com',
+]
 
 
 # Django Settings
@@ -112,7 +114,6 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",  # Vue/other frontend
     # Add your production domains here
     "https://brytebee.pythonanywhere.com",
-    'brytebee.pythonanywhere.com',
 ]
 
 CORS_ALLOW_CREDENTIALS = True

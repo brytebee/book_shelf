@@ -12,7 +12,13 @@ from .serializers import (
     AdminUserSerializer
 )
 from .permissions import IsAdminUser
+from drf_spectacular.utils import extend_schema
 
+@extend_schema(
+    summary="Register new user",
+    description="Create a new user account",
+    responses={201: UserRegistrationSerializer}
+)
 class RegisterView(generics.CreateAPIView):
     """User registration endpoint"""
     queryset = User.objects.all()
@@ -33,6 +39,12 @@ class RegisterView(generics.CreateAPIView):
             'access': str(refresh.access_token),
         }, status=status.HTTP_201_CREATED)
 
+@extend_schema(
+    summary="User login",
+    description="Authenticate user and return JWT tokens",
+    request=UserLoginSerializer,
+    responses={200: UserProfileSerializer}
+)
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])
 def login_view(request):
@@ -49,6 +61,10 @@ def login_view(request):
         'access': str(refresh.access_token),
     })
 
+@extend_schema(
+    summary="User profile",
+    description="Get or update user profile information"
+)
 class ProfileView(generics.RetrieveUpdateAPIView):
     """User profile view and edit"""
     serializer_class = UserProfileSerializer

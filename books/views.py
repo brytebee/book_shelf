@@ -10,7 +10,15 @@ from .permissions import BookPermissions
 from accounts.permissions import IsAdminUser
 from rest_framework import status
 from rest_framework.views import APIView
+from drf_spectacular.utils import extend_schema, extend_schema_view
+from drf_spectacular.openapi import OpenApiParameter
+from drf_spectacular import openapi
 
+@extend_schema(
+    summary="Add a new book",
+    description="Create a new book entry in the system",
+    responses={201: BookSerializer}
+)
 class AddBookView(APIView):
     """
     View for adding new books to the system
@@ -55,6 +63,21 @@ class BookFilter(django_filters.FilterSet):
             'publication_date': ['gte', 'lte'],
         }
 
+@extend_schema_view(
+    list=extend_schema(
+        summary="List all books",
+        description="Retrieve a list of all books with filtering and search capabilities",
+        parameters=[
+            OpenApiParameter(name='search', description='Search in title, author, description', required=False, type=str),
+            OpenApiParameter(name='genre', description='Filter by genre', required=False, type=str),
+            OpenApiParameter(name='is_available', description='Filter by availability', required=False, type=bool),
+        ]
+    ),
+    create=extend_schema(
+        summary="Create a new book",
+        description="Add a new book to the collection (requires authentication)"
+    )
+)
 class BookListView(generics.ListCreateAPIView):
     """
     List all books (public) and create new books (authenticated users only)
@@ -93,6 +116,10 @@ class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = BookSerializer
     permission_classes = [BookPermissions]
 
+@extend_schema(
+    summary="Get my books",
+    description="Retrieve books added by the authenticated user"
+)
 class MyBooksView(generics.ListAPIView):
     """
     List books added by the current authenticated user
